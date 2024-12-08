@@ -20,6 +20,9 @@ class Channel:
         self.video_count = ''.join([x['statistics']['videoCount'] for x in channel['items']])
         self.viewCount = ''.join([x['statistics']['viewCount'] for x in channel['items']])
 
+    def __str__(self) -> str:
+        return f"{self.title} ({self.url})"
+
     @property
     def channel_id(self) -> str:
         """Возвращает id канала."""
@@ -49,6 +52,24 @@ class Channel:
 
         with open(path, 'w', encoding='utf-8') as f:
             json.dump(data, f, ensure_ascii=False, indent=4)
+
+    def __add__(self, other) -> int:
+        return int(self.subscriberCount) + int(other.subscriberCount)
+
+    def __sub__(self, other) -> int:
+        return int(self.subscriberCount) - int(other.subscriberCount)
+
+    def __gt__(self, other) -> bool:
+        return int(self.subscriberCount) > int(other.subscriberCount)
+
+    def __ge__(self, other) -> bool:
+        return int(self.subscriberCount) >= int(other.subscriberCount)
+
+    def __lt__(self, other) -> bool:
+        return int(self.subscriberCount) < int(other.subscriberCount)
+
+    def __le__(self, other) -> bool:
+        return int(self.subscriberCount) <= int(other.subscriberCount)
 
     def print_info(self) -> None:
         """Выводит в консоль информацию о канале."""
