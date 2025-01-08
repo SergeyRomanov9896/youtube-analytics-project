@@ -2,17 +2,19 @@
 import os
 from googleapiclient.discovery import build
 
-class Video:
+class YouTubeMixin:
     """
-    Класс для работы с каналом YouTube.
+        Класс для работы с YouTube API.
 
-    Attributes:
-        API_KEY (str): Ключ YouTube API, полученный из среды.
-        YOUTUBE: Объект службы API YouTube.
+        Attributes:
+            API_KEY (str): Ключ YouTube API, полученный из среды.
+            YOUTUBE: Объект службы API YouTube.
     """
     API_KEY = os.getenv('API_KEY')
     YOUTUBE = build('youtube', 'v3', developerKey=API_KEY)
 
+class Video(YouTubeMixin):
+    """Класс для работы с видео YouTube."""
     def __init__(self, video_id: str) -> None:
         """
         Извлекает информацию о видео с помощью YouTube Data API v3
