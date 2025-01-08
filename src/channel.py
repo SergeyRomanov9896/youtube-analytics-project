@@ -1,19 +1,22 @@
+
 import json
 import os
 
 from googleapiclient.discovery import build
 
-class Channel:
+class YouTubeMixin:
     """
-    Класс для работы с каналом YouTube.
+        Класс для работы с YouTube API.
 
-    Attributes:
-        API_KEY (str): Ключ YouTube API, полученный из среды.
-        YOUTUBE: Объект службы API YouTube.
+        Attributes:
+            API_KEY (str): Ключ YouTube API, полученный из среды.
+            YOUTUBE: Объект службы API YouTube.
     """
     API_KEY = os.getenv('API_KEY')
     YOUTUBE = build('youtube', 'v3', developerKey=API_KEY)
 
+class Channel:
+    """Класс для работы с каналом YouTube."""
     def __init__(self, channel_id: str) -> None:
         """
         Инициализирует экземпляр канала и получает данные о нем из API.
