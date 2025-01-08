@@ -25,11 +25,11 @@ class PlayList(YouTubeMixin):
         :param playlist_id: - идентификатор плейлиста.
 
         Извлеченная информация сохраняется в следующих атрибутах объекта:
-            playlist_response: Ответ от API YouTube с информацией о плейлисте.
-            playlist_id: Идентификатор плейлиста.
-            videos_id: Список идентификаторов видео в плейлисте.
-            title: Название плейлиста.
-            url: URL-адрес плейлиста.
+            playlist_response (dict): Ответ от API YouTube с информацией о плейлисте.
+            playlist_id (str): Идентификатор плейлиста.
+            videos_id (str): Список идентификаторов видео в плейлисте.
+            title (str): Название плейлиста.
+            url (str): URL-адрес плейлиста.
         """
         self.playlist_id = playlist_id
         self.playlist_response = self.YOUTUBE.playlistItems().list(part='snippet,contentDetails',
@@ -47,7 +47,7 @@ class PlayList(YouTubeMixin):
         return f'{self.__class__.__name__}{self.playlist_id}'
 
     @property
-    def total_duration(self):
+    def total_duration(self) -> int:
         """Возвращает общее продолжительность видео в плейлисте."""
         total_duration = datetime.timedelta()
         video_response = self.YOUTUBE.videos().list(part='contentDetails',
@@ -59,7 +59,7 @@ class PlayList(YouTubeMixin):
             total_duration += datetime.timedelta(seconds=durations.total_seconds())
         return total_duration
 
-    def show_best_video(self):
+    def show_best_video(self) -> str:
         """Возвращает ссылку на самое популярное видео в плейлисте."""
         number_likes = []
         id = []

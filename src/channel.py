@@ -21,7 +21,7 @@ class Channel(YouTubeMixin):
         """
         Инициализирует экземпляр канала и получает данные о нем из API.
 
-        :param self.__channel_id: Уникальный идентификатор канала YouTube
+        :param self.__channel_id (str): Уникальный идентификатор канала YouTube
 
         Извлеченная информация сохраняется в следующих атрибутах объекта:
             channel_response (dict): Ответ от API YouTube с информацией о канале.
