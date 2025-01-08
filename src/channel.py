@@ -15,39 +15,51 @@ class YouTubeMixin:
     API_KEY = os.getenv('API_KEY')
     YOUTUBE = build('youtube', 'v3', developerKey=API_KEY)
 
-class Channel:
+class Channel(YouTubeMixin):
     """Класс для работы с каналом YouTube."""
     def __init__(self, channel_id: str) -> None:
         """
         Инициализирует экземпляр канала и получает данные о нем из API.
 
-        :param self.__channel_id: Уникальный идентификатор канала YouTube
+        :param self.__channel_id (str): Уникальный идентификатор канала YouTube
 
         Извлеченная информация сохраняется в следующих атрибутах объекта:
-            self.title (str): Название канала.
-            self.description (str): Описание канала.
-            self.url (str): Ссылка на канал.
-            self.subscriberCount (str): Количество подписчиков.
-            self.video_count (str): Количество видео.
-            self.viewCount (str): Количество просмотров.
+            channel_response (dict): Ответ от API YouTube с информацией о канале.
+            title (str): Название канала.
+            description (str): Описание канала.
+            url (str): Ссылка на канал.
+            subscriberCount (str): Количество подписчиков.
+            video_count (str): Количество видео.
+            viewCount (str): Количество просмотров.
         """
         self.__channel_id = channel_id
-        channel = self.YOUTUBE.channels().list(id=self.__channel_id, part='snippet,statistics').execute()
-
-        self.title = ''.join([x['snippet']['title'] for x in channel['items']])
-        self.description = ''.join([x['snippet']['description'] for x in channel['items']])
+        self.channel_response = self.YOUTUBE.channels().list(id=self.__channel_id, part='snippet,statistics').execute()
+        self.title = ''.join([x['snippet']['title'] for x in self.channel_response['items']])
+        self.description = ''.join([x['snippet']['description'] for x in self.channel_response['items']])
         self.url = f"https://www.youtube.com/channel/{self.__channel_id}"
-        self.subscriberCount = ''.join([x['statistics']['subscriberCount'] for x in channel['items']])
-        self.video_count = ''.join([x['statistics']['videoCount'] for x in channel['items']])
-        self.viewCount = ''.join([x['statistics']['viewCount'] for x in channel['items']])
+        self.subscriberCount = ''.join([x['statistics']['subscriberCount'] for x in self.channel_response['items']])
+        self.video_count = ''.join([x['statistics']['videoCount'] for x in self.channel_response['items']])
+        self.viewCount = ''.join([x['statistics']['viewCount'] for x in self.channel_response['items']])
 
     def __repr__(self):
-        """Возвращает строковое представление объекта для разработчиков."""
-        return f"Channel(id={self.__channel_id}"
+        """
+        Возвращает строковое представление объекта для разработчиков.
+
+        :return: Уникальный идентификатор канала YouTube
+        """
+        return f"{self.__class__.__name__}{self.__channel_id}"
 
     def __str__(self) -> str:
-        """Возвращает строковое представление объекта для пользователей."""
+        """
+        Возвращает строковое представление объекта для пользователей.
+
+        :return: Название канала и ссылка на канал
+        """
         return f"{self.title} ({self.url})"
+
+    def print_info(self) -> None:
+        """Выводит в консоль информацию о канале."""
+        print(json.dumps(self.channel_response, indent=2, ensure_ascii=False))
 
     @property
     def channel_id(self) -> str:
@@ -111,8 +123,3 @@ class Channel:
     def __le__(self, other) -> bool:
         """Возвращает True, если подписчики первого канала не меньше второго, иначе False."""
         return int(self.subscriberCount) <= int(other.subscriberCount)
-
-    def print_info(self) -> None:
-        """Выводит в консоль информацию о канале."""
-        channel = self.YOUTUBE.channels().list(id=self.__channel_id, part='snippet,statistics').execute()
-        print(json.dumps(channel, indent=2, ensure_ascii=False))
