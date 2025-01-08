@@ -25,8 +25,8 @@ class PlayList(YouTubeMixin):
         :param playlist_id: - идентификатор плейлиста.
 
         Извлеченная информация сохраняется в следующих атрибутах объекта:
-            playlist_id: Идентификатор плейлиста.
             playlist_response: Ответ от API YouTube с информацией о плейлисте.
+            playlist_id: Идентификатор плейлиста.
             videos_id: Список идентификаторов видео в плейлисте.
             title: Название плейлиста.
             url: URL-адрес плейлиста.
@@ -39,7 +39,11 @@ class PlayList(YouTubeMixin):
         self.url = f'https://www.youtube.com/playlist?list={self.playlist_id}'
 
     def __repr__(self):
-        """Возвращает строковое представление объекта для разработчиков."""
+        """
+        Возвращает строковое представление объекта для разработчиков.
+
+        :return: Уникальный идентификатор плейлиста YouTube
+        """
         return f'{self.__class__.__name__}{self.playlist_id}'
 
     @property

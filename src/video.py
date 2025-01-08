@@ -1,5 +1,6 @@
 
 import os
+
 from googleapiclient.discovery import build
 
 class YouTubeMixin:
@@ -22,25 +23,33 @@ class Video(YouTubeMixin):
         :param video_id: id видео
 
         Извлеченная информация сохраняется в следующих атрибутах объекта:
-            self.title (str): заголовок видео
-            self.url (str): ссылка на видео
-            self.view_count (str): количество просмотров видео
-            self.like_count (str): количество лайков видео
+            video_response (dict): Ответ от API YouTube с информацией о видео.
+            title (str): Заголовок видео
+            url (str): Ссылка на видео
+            view_count (str): Количество просмотров видео
+            like_count (str): Количество лайков видео
         """
         self.video_id = video_id
-        video_response = self.YOUTUBE.videos().list(part='snippet,statistics', id=self.video_id).execute()
-
-        self.title = ''.join([title['snippet']['title'] for title in video_response['items']])
+        self.video_response = self.YOUTUBE.videos().list(part='snippet,statistics', id=self.video_id).execute()
+        self.title = ''.join([title['snippet']['title'] for title in self.video_response['items']])
         self.url = f'https://www.youtube.com/watch?v={self.video_id}'
-        self.view_count = ''.join([viewCount['statistics']['viewCount'] for viewCount in video_response['items']])
-        self.like_count = ''.join([likeCount['statistics']['likeCount'] for likeCount in video_response['items']])
+        self.view_count = ''.join([viewCount['statistics']['viewCount'] for viewCount in self.video_response['items']])
+        self.like_count = ''.join([likeCount['statistics']['likeCount'] for likeCount in self.video_response['items']])
 
     def __repr__(self):
-        """Возвращает строковое представление объекта для разработчиков."""
-        return f"Video(id={self.video_id}"
+        """
+        Возвращает строковое представление объекта для разработчиков.
+
+        :return: Уникальный идентификатор видео YouTube
+        """
+        return f"{self.__class__.__name__}{self.video_id}"
 
     def __str__(self):
-        """Возвращает строковое представление объекта для пользователей."""
+        """
+        Возвращает строковое представление объекта для пользователей.
+
+        :return: Заголовок видео
+        """
         return f"{self.title}"
 
 class PLVideo(Video):
@@ -57,11 +66,19 @@ class PLVideo(Video):
         self.playlist_id = playlist_id
 
     def __repr__(self):
-        """Возвращает строковое представление объекта для разработчиков."""
-        return f"PLVideo(id={self.video_id}, title={self.playlist_id})"
+        """
+        Возвращает строковое представление объекта для разработчиков.
+
+        :return: Уникальный идентификатор видео YouTube и идентификатор плейлиста
+        """
+        return f"{self.__class__.__name__}{self.video_id}, title={self.playlist_id})"
 
     def __str__(self):
-        """Возвращает строковое представление объекта для пользователей."""
+        """
+        Возвращает строковое представление объекта для разработчиков.
+
+        :return: Заголовок видео
+        """
         return f"{self.title}"
 
 
