@@ -1,20 +1,9 @@
 
-import os
 import datetime
 
 import isodate
-from googleapiclient.discovery import build
 
-class YouTubeMixin:
-    """
-        Класс для работы с YouTube API.
-
-        Attributes:
-            API_KEY (str): Ключ YouTube API, полученный из среды.
-            YOUTUBE: Объект службы API YouTube.
-    """
-    API_KEY = os.getenv('API_KEY')
-    YOUTUBE = build('youtube', 'v3', developerKey=API_KEY)
+from src.youtube import YouTubeMixin
 
 class PlayList(YouTubeMixin):
     """Класс для работы с каналом YouTube."""
