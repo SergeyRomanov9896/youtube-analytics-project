@@ -17,12 +17,19 @@ class Video(YouTubeMixin):
             like_count (str): Количество лайков видео
         """
         self.video_id = video_id
-        self.video_response = self.YOUTUBE.videos().list(part='snippet,statistics', id=self.video_id).execute()
-        self.title = ''.join([title['snippet']['title'] for title in self.video_response['items']])
-        self.url = f'https://www.youtube.com/watch?v={self.video_id}'
-        self.view_count = ''.join([viewCount['statistics']['viewCount'] for viewCount in self.video_response['items']])
-        self.like_count = ''.join([likeCount['statistics']['likeCount'] for likeCount in self.video_response['items']])
-
+        try:
+            self.video_response = self.YOUTUBE.videos().list(part='snippet,statistics', id=self.video_id).execute()
+            video_data = self.video_response['items'][0]
+            self.title = video_data['snippet']['title']
+            self.like_count = video_data['statistics']['likeCount']
+            self.url = f'https://www.youtube.com/watch?v={self.video_id}'
+            self.view_count = video_data['statistics']['viewCount']
+        except IndexError:
+            self.video_id = video_id
+            self.title = None
+            self.like_count = None
+            self.url = None
+            self.view_count = None
     def __repr__(self):
         """
         Возвращает строковое представление объекта для разработчиков.
@@ -67,6 +74,3 @@ class PLVideo(Video):
         :return: Заголовок видео
         """
         return f"{self.title}"
-
-
-
